@@ -1,7 +1,18 @@
 import { useState } from "react";
 import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  EnvelopeFill,
+  LockFill,
+  EyeFill,
+  EyeSlashFill
+} from "react-bootstrap-icons";
 
 function Login() {
+  const navigate = useNavigate();
+
+  const [showPassword, setShowPassword] = useState(false);
+
   const [loginData, setLoginData] = useState({
     email: "",
     password: ""
@@ -22,6 +33,9 @@ function Login() {
       );
 
       alert("Welcome " + response.data.user.fullName);
+
+      navigate("/dashboard");
+
     } catch (error) {
       alert("Invalid Email or Password");
     }
@@ -29,31 +43,67 @@ function Login() {
 
   return (
     <div>
-      <h2>Login</h2>
 
-      <input
-        type="email"
-        name="email"
-        placeholder="Email"
-        value={loginData.email}
-        onChange={handleChange}
-      />
+      <div className="mb-3">
+        <label className="form-label fw-semibold">
+          <EnvelopeFill className="me-2" />
+          Email
+        </label>
 
-      <br /><br />
+        <input
+          type="email"
+          name="email"
+          className="form-control"
+          placeholder="Enter your email"
+          value={loginData.email}
+          onChange={handleChange}
+        />
+      </div>
 
-      <input
-        type="password"
-        name="password"
-        placeholder="Password"
-        value={loginData.password}
-        onChange={handleChange}
-      />
+      <div className="mb-4">
+        <label className="form-label fw-semibold">
+          <LockFill className="me-2" />
+          Password
+        </label>
 
-      <br /><br />
+        <div className="input-group">
 
-      <button onClick={handleLogin}>
+          <input
+            type={showPassword ? "text" : "password"}
+            name="password"
+            className="form-control"
+            placeholder="Enter your password"
+            value={loginData.password}
+            onChange={handleChange}
+          />
+
+          <button
+            type="button"
+            className="btn btn-outline-secondary"
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? <EyeSlashFill /> : <EyeFill />}
+          </button>
+
+        </div>
+      </div>
+            <button
+        className="btn btn-primary w-100 fw-bold mb-3"
+        onClick={handleLogin}
+      >
         Login
       </button>
+
+      <p className="text-center mb-0">
+        Don't have an account?{" "}
+        <Link
+          to="/register"
+          className="text-decoration-none fw-bold"
+        >
+          Create Account
+        </Link>
+      </p>
+
     </div>
   );
 }

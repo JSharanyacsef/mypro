@@ -1,0 +1,36 @@
+body{
+    margin:0;
+    font-family:'Poppins',sans-serif;
+    background:linear-gradient(135deg,#667eea,#764ba2);
+}
+
+.auth-card{
+    width:470px;
+    background:rgba(255,255,255,.95);
+    padding:35px;
+    border-radius:20px;
+    backdrop-filter:blur(20px);
+    box-shadow:0 20px 60px rgba(0,0,0,.25);
+    animation:fade .6s;
+}
+
+.form-control{
+    border-radius:12px!important;
+    padding:12px;
+}
+
+.btn{
+    border-radius:12px!important;
+    padding:10px;
+}
+
+@keyframes fade{
+    from{
+        opacity:0;
+        transform:translateY(30px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}

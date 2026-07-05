@@ -11,5 +11,31 @@
     ],
     "id": 1783271566822,
     "connections": []
+  },
+  {
+    "fullName": "",
+    "email": "doctor2@gmail.com",
+    "password": "1234",
+    "rollNumber": "",
+    "year": "",
+    "branch": "",
+    "interests": [
+      ""
+    ],
+    "id": 1783273344483,
+    "connections": []
+  },
+  {
+    "fullName": "sharanya@gmail.com",
+    "email": "sharanya@gmail.com",
+    "password": "123456",
+    "rollNumber": "24WH1A05BH",
+    "year": "3",
+    "branch": "cse",
+    "interests": [
+      "ai"
+    ],
+    "id": 1783274668628,
+    "connections": []
   }
 ]
