@@ -1,111 +1,349 @@
-// Import the Express framework
-const express = require("express");
+// ==============================
+// Student Collaboration Platform
+// Backend - Part 1
+// ==============================
 
-// Import CORS so React can communicate with the backend
+const express = require("express");
 const cors = require("cors");
 const fs = require("fs");
-
-// Create an Express application
-const app = express();
 const path = require("path");
 
-// Middleware
+const app = express();
+
 app.use(cors());
 app.use(express.json());
 
-// Home route
+const USERS_FILE = path.join(__dirname, "users.json");
+
+// ==============================
+// HOME
+// ==============================
+
 app.get("/", (req, res) => {
-    res.send("Student Collaboration Platform Backend is Running 🚀");
+    res.send("🚀 Student Collaboration Platform Backend Running");
 });
-// Get all users
+
+// ==============================
+// GET ALL USERS
+// ==============================
+
 app.get("/users", (req, res) => {
-   fs.readFile(path.join(__dirname, "users.json"), "utf8", (err, data) => {
-      if (err) {
-    console.log(err);
-    return res.status(500).json({
-        message: err.message
-    });
-}
-        const users = JSON.parse(data);
-        res.json(users);
-    });
-});
-// Register a new user
-app.post("/register", (req, res) => {
-    // Read existing users
-    fs.readFile(path.join(__dirname, "users.json"), "utf8", (err, data) => {
+
+    fs.readFile(USERS_FILE, "utf8", (err, data) => {
+
         if (err) {
             return res.status(500).json({
-                message: "Error reading users file"
+                message: "Unable to read users file"
             });
         }
 
-        // Convert JSON to JavaScript array
         const users = JSON.parse(data);
 
-        // Get new user data from request
-        const newUser = req.body;
+        res.json(users);
 
-        // Generate a simple ID
-        newUser.id = Date.now();
+    });
 
-        // Empty connections array
-        newUser.connections = [];
+});
 
-        // Add user to array
+// ==============================
+// REGISTER
+// ==============================
+
+app.post("/register", (req, res) => {
+
+    fs.readFile(USERS_FILE, "utf8", (err, data) => {
+
+        if (err) {
+            return res.status(500).json({
+                message: "Unable to read users file"
+            });
+        }
+
+        const users = JSON.parse(data);
+
+        const {
+            fullName,
+            email,
+            password,
+            rollNumber,
+            year,
+            branch,
+            interests
+        } = req.body;
+
+        const existingUser = users.find(
+            user => user.email === email
+        );
+
+        if (existingUser) {
+
+            return res.status(400).json({
+                message: "Email already registered"
+            });
+
+        }
+
+        const newUser = {
+
+            id: Date.now(),
+
+            fullName,
+
+            email,
+
+            password,
+
+            rollNumber,
+
+            year,
+
+            branch,
+
+            interests,
+
+            connections: []
+
+        };
+
         users.push(newUser);
 
-        // Save updated users array
         fs.writeFile(
-            path.join(__dirname, "users.json"),
+
+            USERS_FILE,
+
+            JSON.stringify(users, null, 2),
+
+            (err) => {
+
+                if (err) {
+
+                    return res.status(500).json({
+                        message: "Unable to save user"
+                    });
+
+                }
+
+                res.json({
+
+                    message: "Registration Successful",
+
+                    user: newUser
+
+                });
+
+            }
+
+        );
+
+    });
+
+});
+
+// ==============================
+// LOGIN
+// ==============================
+
+app.post("/login", (req, res) => {
+
+    const { email, password } = req.body;
+
+    fs.readFile(USERS_FILE, "utf8", (err, data) => {
+
+        if (err) {
+
+            return res.status(500).json({
+                message: "Unable to read users"
+            });
+
+        }
+
+        const users = JSON.parse(data);
+
+        const user = users.find(
+
+            u =>
+
+                u.email === email &&
+
+                u.password === password
+
+        );
+
+        if (!user) {
+
+            return res.status(401).json({
+
+                message: "Invalid Email or Password"
+
+            });
+
+        }
+
+        res.json({
+
+            message: "Login Successful",
+
+            user
+
+        });
+
+    });
+
+});
+// ==============================
+// CONNECT STUDENTS
+// ==============================
+
+app.put("/connect", (req, res) => {
+
+    const { currentUserId, targetUserId } = req.body;
+
+    fs.readFile(USERS_FILE, "utf8", (err, data) => {
+
+        if (err) {
+            return res.status(500).json({
+                message: "Unable to read users"
+            });
+        }
+
+        const users = JSON.parse(data);
+
+        const currentUser = users.find(
+            user => user.id == currentUserId
+        );
+
+        if (!currentUser) {
+            return res.status(404).json({
+                message: "Current user not found"
+            });
+        }
+
+        if (!currentUser.connections.includes(targetUserId)) {
+            currentUser.connections.push(targetUserId);
+        }
+
+        fs.writeFile(
+            USERS_FILE,
             JSON.stringify(users, null, 2),
             (err) => {
+
                 if (err) {
                     return res.status(500).json({
-                        message: "Error saving user"
+                        message: "Unable to save connection"
                     });
                 }
 
                 res.json({
-                    message: "Registration successful",
-                    user: newUser
+                    message: "Connected Successfully"
                 });
+
             }
         );
-    });
-});
-// Login user
-app.post("/login", (req, res) => {
-    const { email, password } = req.body;
 
-    fs.readFile(path.join(__dirname, "users.json"), "utf8", (err, data) => {
+    });
+
+});
+
+// ==============================
+// UPDATE PROFILE
+// ==============================
+
+app.put("/users/:id", (req, res) => {
+
+    const id = Number(req.params.id);
+
+    fs.readFile(USERS_FILE, "utf8", (err, data) => {
+
         if (err) {
             return res.status(500).json({
-                message: "Error reading users file"
+                message: "Unable to read users"
+            });
+        }
+
+        const users = JSON.parse(data);
+
+        const index = users.findIndex(
+            user => user.id === id
+        );
+
+        if (index === -1) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+
+        users[index] = {
+            ...users[index],
+            ...req.body
+        };
+
+        fs.writeFile(
+            USERS_FILE,
+            JSON.stringify(users, null, 2),
+            (err) => {
+
+                if (err) {
+                    return res.status(500).json({
+                        message: "Unable to update profile"
+                    });
+                }
+
+                res.json({
+                    message: "Profile Updated Successfully",
+                    user: users[index]
+                });
+
+            }
+        );
+
+    });
+
+});
+
+// ==============================
+// GET CONNECTIONS
+// ==============================
+
+app.get("/connections/:id", (req, res) => {
+
+    const id = Number(req.params.id);
+
+    fs.readFile(USERS_FILE, "utf8", (err, data) => {
+
+        if (err) {
+            return res.status(500).json({
+                message: "Unable to read users"
             });
         }
 
         const users = JSON.parse(data);
 
         const user = users.find(
-            (u) => u.email === email && u.password === password
+            user => user.id === id
         );
 
         if (!user) {
-            return res.status(401).json({
-                message: "Invalid Email or Password"
+            return res.status(404).json({
+                message: "User not found"
             });
         }
 
-        res.json({
-            message: "Login Successful",
-            user
-        });
+        const connections = users.filter(
+            u => user.connections.includes(u.id)
+        );
+
+        res.json(connections);
+
     });
+
 });
-// Start the server
+
+// ==============================
+// START SERVER
+// ==============================
+
 const PORT = 5000;
 
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
 });

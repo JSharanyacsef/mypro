@@ -27,9 +27,16 @@ function Login() {
 
   const handleLogin = async () => {
     try {
+
       const response = await axios.post(
         "http://localhost:5000/login",
         loginData
+      );
+
+      // Store logged in user for this session
+      sessionStorage.setItem(
+        "loggedInUser",
+        JSON.stringify(response.data.user)
       );
 
       alert("Welcome " + response.data.user.fullName);
@@ -37,7 +44,9 @@ function Login() {
       navigate("/dashboard");
 
     } catch (error) {
+
       alert("Invalid Email or Password");
+
     }
   };
 
@@ -87,7 +96,8 @@ function Login() {
 
         </div>
       </div>
-            <button
+
+      <button
         className="btn btn-primary w-100 fw-bold mb-3"
         onClick={handleLogin}
       >

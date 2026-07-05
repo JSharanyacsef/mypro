@@ -37,5 +37,64 @@
     ],
     "id": 1783274668628,
     "connections": []
+  },
+  {
+    "id": 1783290624911,
+    "fullName": "lahari@gmail.com",
+    "email": "24wh1a05ba@bvrithyderabad.edu.in",
+    "password": "123456",
+    "rollNumber": "24WH11A05BH",
+    "year": "3",
+    "branch": "CSE",
+    "interests": [
+      "C"
+    ],
+    "connections": []
+  },
+  {
+    "id": 1783290740935,
+    "fullName": "monisha",
+    "email": "24wh1a05bc@bvrithyderabad.edu.in",
+    "password": "123456",
+    "rollNumber": "24WH1A05BC",
+    "year": "3",
+    "branch": "CSE",
+    "interests": [
+      "python"
+    ],
+    "connections": [
+      1783290624911,
+      1783271566822,
+      1783273344483,
+      1783274668628
+    ]
+  },
+  {
+    "id": 1783291941231,
+    "fullName": "sanjana",
+    "email": "24wh1a05z3@bvrithyderabad.edu.in",
+    "password": "123456",
+    "rollNumber": "24WH1A05Z3",
+    "year": "3",
+    "branch": "CSE",
+    "interests": [
+      "PYTHON"
+    ],
+    "connections": [
+      1783271566822
+    ]
+  },
+  {
+    "id": 1783292185894,
+    "fullName": "sneha",
+    "email": "24wh1a05ad@bvrithyderabad.edu.in",
+    "password": "123456",
+    "rollNumber": "24WH1A05AD",
+    "year": "3",
+    "branch": "CSE",
+    "interests": [
+      "ML"
+    ],
+    "connections": []
   }
 ]
