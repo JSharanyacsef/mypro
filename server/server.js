@@ -10,7 +10,12 @@ const path = require("path");
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: [
+    "http://localhost:3000",
+    "https://mypro-1-r9uy.onrender.com"
+  ]
+}));
 app.use(express.json());
 
 const USERS_FILE = path.join(__dirname, "users.json");
