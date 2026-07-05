@@ -21,7 +21,7 @@ function StudentCard({ student, currentUser }) {
   try {
 
     await axios.put(
-      "http://localhost:5000/connect",
+      "https://mypro-qvbq.onrender.com",
       {
         currentUserId: currentUser.id,
         targetUserId: student.id

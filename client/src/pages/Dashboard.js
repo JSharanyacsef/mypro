@@ -28,7 +28,7 @@ function Dashboard() {
     try {
 
       const response = await axios.get(
-        "http://localhost:5000/users"
+        "https://mypro-qvbq.onrender.com"
       );
 
       const otherStudents = response.data.filter(

@@ -32,7 +32,7 @@ function Profile() {
       };
 
       const response = await axios.put(
-        `http://localhost:5000/users/${user.id}`,
+        `https://mypro-qvbq.onrender.com/users/${user.id}`,
         updatedUser
       );
 
