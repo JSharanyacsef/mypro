@@ -74,6 +74,35 @@ app.post("/register", (req, res) => {
         );
     });
 });
+// Login user
+app.post("/login", (req, res) => {
+    const { email, password } = req.body;
+
+    fs.readFile(path.join(__dirname, "users.json"), "utf8", (err, data) => {
+        if (err) {
+            return res.status(500).json({
+                message: "Error reading users file"
+            });
+        }
+
+        const users = JSON.parse(data);
+
+        const user = users.find(
+            (u) => u.email === email && u.password === password
+        );
+
+        if (!user) {
+            return res.status(401).json({
+                message: "Invalid Email or Password"
+            });
+        }
+
+        res.json({
+            message: "Login Successful",
+            user
+        });
+    });
+});
 // Start the server
 const PORT = 5000;
 
