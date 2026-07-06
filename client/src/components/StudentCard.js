@@ -5,9 +5,7 @@ import "../styles/Card.css";
 function StudentCard({ student, currentUser }) {
 
   const [connected, setConnected] = useState(
-
     currentUser.connections.includes(student.id)
-
   );
 
   const avatar = student.fullName
@@ -16,39 +14,46 @@ function StudentCard({ student, currentUser }) {
     .join("")
     .toUpperCase();
 
- const connectStudent = async () => {
+  const connectStudent = async () => {
 
-  try {
+    try {
 
-    await axios.put(
-      "https://mypro-qvbq.onrender.com",
-      {
-        currentUserId: currentUser.id,
-        targetUserId: student.id
-      }
-    );
+      const response = await axios.put(
+        "https://mypro-qvbq.onrender.com/connect",
+        {
+          currentUserId: currentUser.id,
+          targetUserId: student.id
+        }
+      );
 
-    const updatedUser = {
-      ...currentUser,
-      connections: [...currentUser.connections, student.id]
-    };
+      console.log(response.data);
 
-    sessionStorage.setItem(
-      "loggedInUser",
-      JSON.stringify(updatedUser)
-    );
+      const updatedUser = {
+        ...currentUser,
+        connections: [...currentUser.connections, student.id]
+      };
 
-    setConnected(true);
+      sessionStorage.setItem(
+        "loggedInUser",
+        JSON.stringify(updatedUser)
+      );
 
-  } catch (error) {
+      setConnected(true);
 
-    console.log(error);
+      alert("Connected Successfully!");
 
-    alert("Unable to Connect");
+    } catch (error) {
 
-  }
+      console.log(error.response?.data || error.message);
 
-};
+      alert(
+        error.response?.data?.message || "Unable to Connect"
+      );
+
+    }
+
+  };
+
   return (
 
     <div className="col-lg-4 col-md-6 mb-4">
@@ -68,16 +73,14 @@ function StudentCard({ student, currentUser }) {
           </p>
 
           <p>
-
             <strong>{student.branch}</strong> • {student.year}
-
           </p>
 
           <p>{student.email}</p>
 
           <div className="mb-3">
 
-            {student.interests.map((interest, index) => (
+            {(student.interests || []).map((interest, index) => (
 
               <span
                 key={index}
@@ -91,27 +94,20 @@ function StudentCard({ student, currentUser }) {
           </div>
 
           <p className="text-success fw-bold">
-
-            🔥 {student.interests.length} Interests
-
+            🔥 {(student.interests || []).length} Interests
           </p>
 
           <button
-
+            type="button"
             disabled={connected}
-
             className={
               connected
                 ? "btn btn-secondary w-100"
                 : "btn btn-success w-100"
             }
-
             onClick={connectStudent}
-
           >
-
             {connected ? "Connected ✔" : "Connect"}
-
           </button>
 
         </div>
