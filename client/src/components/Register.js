@@ -32,18 +32,22 @@ function Register() {
     });
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    if (e) e.preventDefault();
+
+    console.log("REGISTER CLICKED");
+
     try {
       const userData = {
         ...formData,
         interests: formData.interests
           .split(",")
           .map((item) => item.trim())
-          .filter((item) => item !== "")
+          .filter(Boolean)
       };
 
       const response = await axios.post(
-        "https://mypro-qvbq.onrender.com",
+        "https://mypro-qvbq.onrender.com/register",
         userData
       );
 
@@ -58,29 +62,23 @@ function Register() {
         branch: "",
         interests: ""
       });
+
     } catch (error) {
-      alert("Registration Failed");
-      console.log(error);
+      console.log("ERROR:", error.response?.data || error.message);
+      alert(error.response?.data?.message || "Registration Failed");
     }
   };
 
   return (
-    <div>
-
+    <form onSubmit={handleSubmit}>
+      
       <div className="mb-3">
         <label className="form-label fw-semibold">
           <PersonFill className="me-2" />
           Full Name
         </label>
-
-        <input
-          type="text"
-          name="fullName"
-          className="form-control"
-          placeholder="Enter your full name"
-          value={formData.fullName}
-          onChange={handleChange}
-        />
+        <input type="text" name="fullName" className="form-control"
+          value={formData.fullName} onChange={handleChange} />
       </div>
 
       <div className="mb-3">
@@ -88,15 +86,8 @@ function Register() {
           <EnvelopeFill className="me-2" />
           Email
         </label>
-
-        <input
-          type="email"
-          name="email"
-          className="form-control"
-          placeholder="Enter your email"
-          value={formData.email}
-          onChange={handleChange}
-        />
+        <input type="email" name="email" className="form-control"
+          value={formData.email} onChange={handleChange} />
       </div>
 
       <div className="mb-3">
@@ -106,12 +97,10 @@ function Register() {
         </label>
 
         <div className="input-group">
-
           <input
             type={showPassword ? "text" : "password"}
             name="password"
             className="form-control"
-            placeholder="Enter password"
             value={formData.password}
             onChange={handleChange}
           />
@@ -123,90 +112,45 @@ function Register() {
           >
             {showPassword ? <EyeSlashFill /> : <EyeFill />}
           </button>
-
         </div>
       </div>
 
       <div className="mb-3">
-        <label className="form-label fw-semibold">
-          <MortarboardFill className="me-2" />
-          Roll Number
-        </label>
-
-        <input
-          type="text"
-          name="rollNumber"
-          className="form-control"
-          placeholder="Enter Roll Number"
-          value={formData.rollNumber}
-          onChange={handleChange}
-        />
-      </div>
-            <div className="mb-3">
-        <label className="form-label fw-semibold">
-          <CalendarFill className="me-2" />
-          Year
-        </label>
-
-        <input
-          type="text"
-          name="year"
-          className="form-control"
-          placeholder="Example: 2nd Year"
-          value={formData.year}
-          onChange={handleChange}
-        />
+        <input type="text" name="rollNumber" className="form-control"
+          placeholder="Roll Number"
+          value={formData.rollNumber} onChange={handleChange} />
       </div>
 
       <div className="mb-3">
-        <label className="form-label fw-semibold">
-          <BookFill className="me-2" />
-          Branch
-        </label>
-
-        <input
-          type="text"
-          name="branch"
-          className="form-control"
-          placeholder="Example: CSE"
-          value={formData.branch}
-          onChange={handleChange}
-        />
+        <input type="text" name="year" className="form-control"
+          placeholder="Year"
+          value={formData.year} onChange={handleChange} />
       </div>
 
-      <div className="mb-4">
-        <label className="form-label fw-semibold">
-          ❤️ Interests
-        </label>
-
-        <input
-          type="text"
-          name="interests"
-          className="form-control"
-          placeholder="AI, Web Development, ML"
-          value={formData.interests}
-          onChange={handleChange}
-        />
+      <div className="mb-3">
+        <input type="text" name="branch" className="form-control"
+          placeholder="Branch"
+          value={formData.branch} onChange={handleChange} />
       </div>
 
-      <button
-        className="btn btn-primary w-100 fw-bold mb-3"
-        onClick={handleSubmit}
-      >
+      <div className="mb-3">
+        <input type="text" name="interests" className="form-control"
+          placeholder="AI, Web Dev"
+          value={formData.interests} onChange={handleChange} />
+      </div>
+
+      <button type="submit" className="btn btn-primary w-100 fw-bold mb-3">
         Create Account
       </button>
 
-      <p className="text-center mb-0">
+      <p className="text-center">
         Already have an account?{" "}
-        <Link
-          to="/"
-          className="text-decoration-none fw-bold"
-        >
+        <Link to="/login" className="fw-bold">
           Login
         </Link>
       </p>
 
-    </div>
+    </form>
   );
 }
 

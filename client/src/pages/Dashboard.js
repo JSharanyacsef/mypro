@@ -10,7 +10,6 @@ import InterestFilter from "../components/InterestFilter";
 import "../styles/Dashboard.css";
 
 function Dashboard() {
-
   const loggedInUser = JSON.parse(
     sessionStorage.getItem("loggedInUser")
   );
@@ -24,51 +23,43 @@ function Dashboard() {
   }, []);
 
   const fetchStudents = async () => {
-
     try {
-
       const response = await axios.get(
-        "https://mypro-qvbq.onrender.com"
+        "https://mypro-qvbq.onrender.com/users"
       );
 
       const otherStudents = response.data.filter(
-        student => student.id !== loggedInUser.id
+        (student) => student.id !== loggedInUser.id
       );
 
       setStudents(otherStudents);
       setFilteredStudents(otherStudents);
 
     } catch (error) {
-
-      console.log(error);
-
+      console.error("Error fetching students:", error);
     }
-
   };
 
   useEffect(() => {
-
-    const result = students.filter(student =>
-
+    const result = students.filter((student) =>
       student.fullName.toLowerCase().includes(search.toLowerCase()) ||
-
       student.email.toLowerCase().includes(search.toLowerCase()) ||
-
       student.rollNumber.toLowerCase().includes(search.toLowerCase()) ||
-
       student.branch.toLowerCase().includes(search.toLowerCase())
-
     );
 
     setFilteredStudents(result);
 
   }, [search, students]);
 
-  // ⭐ Find Best Study Buddy
+  // Best Study Buddy
   const bestBuddy = students.reduce((best, student) => {
 
-    const common = student.interests.filter(interest =>
-      loggedInUser.interests.includes(interest)
+    const studentInterests = student.interests || [];
+    const userInterests = loggedInUser.interests || [];
+
+    const common = studentInterests.filter((interest) =>
+      userInterests.includes(interest)
     ).length;
 
     if (!best || common > best.common) {
@@ -109,7 +100,6 @@ function Dashboard() {
         />
 
         {bestBuddy && (
-
           <div className="card shadow border-0 rounded-4 mb-4">
 
             <div className="card-body">
@@ -129,52 +119,40 @@ function Dashboard() {
               </p>
 
               <div>
-
-                {bestBuddy.interests.map((interest, index) => (
-
+                {bestBuddy.interests?.map((interest, index) => (
                   <span
                     key={index}
                     className="badge bg-success me-2 mb-2"
                   >
                     {interest}
                   </span>
-
                 ))}
-
               </div>
 
             </div>
 
           </div>
-
         )}
 
         <div className="row mt-4">
 
           {filteredStudents.length > 0 ? (
-
-            filteredStudents.map(student => (
-
+            filteredStudents.map((student) => (
               <StudentCard
                 key={student.id}
                 student={student}
                 currentUser={loggedInUser}
               />
-
             ))
-
           ) : (
-
             <div className="text-center mt-5">
               <h4>No Students Found 😔</h4>
             </div>
-
           )}
 
         </div>
 
       </div>
-
     </>
   );
 }

@@ -27,13 +27,12 @@ function Login() {
 
   const handleLogin = async () => {
     try {
-
       const response = await axios.post(
-        "https://mypro-qvbq.onrender.com",
+        "https://mypro-qvbq.onrender.com/login",
         loginData
       );
 
-      // Store logged in user for this session
+      // Store user in session
       sessionStorage.setItem(
         "loggedInUser",
         JSON.stringify(response.data.user)
@@ -44,9 +43,8 @@ function Login() {
       navigate("/dashboard");
 
     } catch (error) {
-
-      alert("Invalid Email or Password");
-
+      console.log(error.response?.data || error.message);
+      alert(error.response?.data?.message || "Invalid Email or Password");
     }
   };
 
@@ -76,7 +74,6 @@ function Login() {
         </label>
 
         <div className="input-group">
-
           <input
             type={showPassword ? "text" : "password"}
             name="password"
@@ -93,11 +90,11 @@ function Login() {
           >
             {showPassword ? <EyeSlashFill /> : <EyeFill />}
           </button>
-
         </div>
       </div>
 
       <button
+        type="button"
         className="btn btn-primary w-100 fw-bold mb-3"
         onClick={handleLogin}
       >
